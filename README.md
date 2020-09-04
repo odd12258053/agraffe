@@ -13,7 +13,7 @@ $ pip install agraffe
 ## Example
 Create it
 
-- Create a file `mail.py` with:
+- Create a file `main.py` with:
 
 ```python
 from agraffe import Agraffe
