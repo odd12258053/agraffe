@@ -14,14 +14,26 @@ class ASGIApp(Protocol):
         ...
 
 
-class Request(Protocol):
-    query_string: str
-    headers: Iterable[Tuple[str, str]]
-    environ: MutableMapping[str, str]
-    method: str
-    scheme: str
-    path: str
-    remote_addr: str
+class ASGICycle(Protocol):
+    def __init__(self, request: Any) -> None:
+        ...
 
-    def get_data(self, cache: bool, as_text: bool, parse_form_data: bool) -> bytes:
+    def __call__(self, app: ASGIApp) -> None:
+        ...
+
+    async def run(self, app: ASGIApp) -> None:
+        ...
+
+    async def receive(self) -> Message:
+        ...
+
+    async def send(self, message: Message) -> None:
+        ...
+
+    @property
+    def scope(self) -> Scope:
+        ...
+
+    @property
+    def response(self) -> Response:
         ...

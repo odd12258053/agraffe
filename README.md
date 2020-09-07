@@ -16,7 +16,7 @@ Create it
 - Create a file `main.py` with:
 
 ```python
-from agraffe import Agraffe
+from agraffe import Agraffe, Service
 
 from typing import Optional
 
@@ -35,10 +35,7 @@ def read_item(item_id: int, q: Optional[str] = None):
     return {"item_id": item_id, "q": q}
 
 
-def entry_point(request):
-    agraffe = Agraffe(app)
-    return agraffe(request)
-
+entry_point = Agraffe.entry_point(app, Service.google_cloud_functions)
 ```
 
 Deploy it
