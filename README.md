@@ -1,5 +1,10 @@
 
-Agraffe, build API with ASGI in Google Cloud Functions.
+Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions).
+
+## Support Services
+- [x] Google Cloud Functions
+- [x] AWS lambda (with API Gateway REST API)
+- [ ] Azure Functions
 
 ## Requirements
 

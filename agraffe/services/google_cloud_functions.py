@@ -1,6 +1,5 @@
 from asyncio import Protocol
-from collections import Iterable
-from typing import MutableMapping, Tuple
+from typing import Iterable, MutableMapping, Tuple
 
 from agraffe.services.base import HttpCycleBase
 from agraffe.types import Message, Scope
@@ -32,7 +31,10 @@ class HttpCycle(HttpCycleBase[Request]):
             # 'raw_path': ...,
             'query_string': self.request.query_string,
             'root_path': self.request.environ.get('SCRIPT_NAME', ''),
-            'headers': tuple((k.encode(), v.encode()) for k, v in self.request.headers),
+            'headers': tuple(
+                (k.lower().encode('latin-1'), v.encode('latin-1'))
+                for k, v in self.request.headers
+            ),
             'server': (
                 self.request.environ.get('SERVER_NAME'),
                 self.request.environ.get('SERVER_PORT'),

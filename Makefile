@@ -14,6 +14,3 @@ lint:
 	black --check ${BLACK_OPT} ${TARGETS}
 	flake8 ${FLAKE8_OPT} ${TARGETS}
 	mypy ${MYPY_OPT} ${TARGETS}
-
-run:
-	functions-framework --target=entry_point

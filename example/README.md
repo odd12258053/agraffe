@@ -19,9 +19,14 @@ $ gcloud functions deploy example \
 ### To AWS lambda
 
 ```sh
-$ lambda deploy --profile {PROFILE}
+$ export AWS_REGION={your aws region}
+$ export AWS_PROJECT={your aws project}
+$ export AWS_ACCESS_KEY_ID={your aws secret access key}
+$ export AWS_SECRET_ACCESS_KEY={your aws secret access key}
+$ npm install
+$ npm run deploy -- --config serverless_rest.yml
 ```
 
 > Prerequisites  
-> Installed `python-lambda` (ref: https://github.com/nficano/python-lambda)
+> Installed `serverless` (ref: https://www.serverless.com/)
 

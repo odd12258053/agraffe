@@ -17,7 +17,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development",
-    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.7",
@@ -36,6 +35,5 @@ dev = [
     "black >=20.8b1",
     "isort >=5.5.0, <6.0.0",
     "flake8 >=3.8.3, <4.0.0",
-    "functions-framework >=2.0.0, <3.0.0",
 ]
 

@@ -1,52 +1,46 @@
-from asyncio import Protocol
-from collections import Iterable
-from typing import MutableMapping, Tuple
+from typing import Any, Dict, Iterator
+from urllib.parse import urlencode
 
 from agraffe.services.base import HttpCycleBase
 from agraffe.types import Message, Scope
 
-
-class Request(Protocol):
-    query_string: str
-    headers: Iterable[Tuple[str, str]]
-    environ: MutableMapping[str, str]
-    method: str
-    scheme: str
-    path: str
-    remote_addr: str
-
-    def get_data(self, cache: bool, as_text: bool, parse_form_data: bool) -> bytes:
-        ...
+Request = Dict[str, Dict[str, Any]]
 
 
 class HttpCycle(HttpCycleBase[Request]):
-    # TODO: Fit a event in AWS lambda.
     @property
     def scope(self) -> Scope:
+        event = self.request['event']
+
+        def gene_query_string() -> Iterator[str]:
+            params = event['multiValueQueryStringParameters'] or {}
+            for key, values in params.items():
+                for vale in values:
+                    yield urlencode({key: vale})
+
+        query_string = '&'.join(gene_query_string()).encode()
+
         return {
             'type': 'http',
             'asgi': {'version': '3.0'},
             'http_version': '1.1',
-            'method': self.request.method,
-            'scheme': self.request.scheme,
-            'path': self.request.path,
-            # 'raw_path': ...,
-            'query_string': self.request.query_string,
-            'root_path': self.request.environ.get('SCRIPT_NAME', ''),
-            'headers': tuple((k.encode(), v.encode()) for k, v in self.request.headers),
-            'server': (
-                self.request.environ.get('SERVER_NAME'),
-                self.request.environ.get('SERVER_PORT'),
+            'method': event['httpMethod'],
+            'scheme': 'http',
+            'path': event['path'],
+            'query_string': query_string,
+            'root_path': '',
+            'headers': tuple(
+                (k.lower().encode('latin-1'), v.encode('latin-1'))
+                for k, v in event['headers'].items()
             ),
-            'client': self.request.remote_addr,
+            'server': None,
+            'client': None,
         }
 
     async def receive(self) -> Message:
+        event = self.request['event']
         return {
             'type': 'http.request',
-            'body': self.request.get_data(
-                cache=False, as_text=False, parse_form_data=True
-            )
-            or b'',
+            'body': event.get('body', '').encode(),
             'more_body': False,
         }

@@ -1,4 +1,4 @@
-""" Agraffe, build API with ASGI in Google Cloud Functions."""
+""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """
 
 __version__ = "0.2.0"
 
@@ -42,7 +42,7 @@ class Agraffe:
     @classmethod
     def entry_point(
         cls, app: ASGIApp, service: Union[str, Service]
-    ) -> Callable[..., Response]:
+    ) -> Callable[..., Any]:
         if service == Service.google_cloud_functions:
 
             def _entry_point4gcf(request: Any) -> Response:
@@ -52,8 +52,16 @@ class Agraffe:
 
         elif service == Service.aws_lambda:
 
-            def _entry_point4aws_lambda(event: Any, context: Any) -> Response:
-                return cls(app, service)(request={'event': event, 'context': context})
+            def _entry_point4aws_lambda(event: Any, context: Any) -> Any:
+                body, status_code, headers = cls(app, service)(
+                    request={'event': event, 'context': context}
+                )
+                return {
+                    'statusCode': status_code,
+                    'headers': dict(headers),
+                    'body': body,
+                    'isBase64Encoded': True,
+                }
 
             return _entry_point4aws_lambda
         else:

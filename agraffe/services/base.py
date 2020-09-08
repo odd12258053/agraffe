@@ -27,7 +27,8 @@ class HttpCycleBase(Generic[T]):
         if message['type'] == 'http.response.start':
             self.status_code = message['status']
             self.headers = tuple(
-                (key.decode(), value.decode()) for (key, value) in message['headers']
+                (key.decode('latin-1'), value.decode('latin-1'))
+                for (key, value) in message['headers']
             )
         elif message['type'] == 'http.response.body':
             self.body = message['body']
