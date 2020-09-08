@@ -1,0 +1,44 @@
+service: agraffe-rest
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ${env:AWS_REGION}
+  project: ${env:AWS_PROJECT}
+  environment:
+    AgraffeService: AWS Lambda
+
+functions:
+  agraffe-example:
+    handler: main.entry_point
+    memorySize: 256
+    timeout: 30
+    package:
+      include:
+        - main.py
+        - models.py
+        - agraffe
+    events:
+      - http:
+          path: /
+          method: get
+      - http:
+          path: /items/{item_id}
+          method: get
+          request:
+            parameters:
+              paths:
+                item_id: true
+      - http:
+          path: /items
+          method: post
+      - http:
+          path: /cookies
+          method: get
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    usePoetry: false

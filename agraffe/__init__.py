@@ -1,100 +1,69 @@
-""" Agraffe, build API with ASGI in Google Cloud Functions."""
+""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 import asyncio
-from typing import Callable, Iterable, Tuple
+from enum import Enum
+from typing import Any, Callable, Type, Union
 
-from .types import ASGIApp, Message, Request, Response, Scope
-
-
-class ASGICycle:
-    def __call__(self, app: ASGIApp) -> None:
-        loop = asyncio.get_event_loop()
-        instance = self.run(app)
-        task = loop.create_task(instance)
-        loop.run_until_complete(task)
-
-    async def run(self, app: ASGIApp) -> None:
-        await app(self.scope, self.receive, self.send)
-
-    async def receive(self) -> Message:
-        raise NotImplementedError
-
-    async def send(self, message: Message) -> None:
-        raise NotImplementedError
-
-    @property
-    def scope(self) -> Scope:
-        raise NotImplementedError
+from .types import ASGIApp, ASGICycle, Response
 
 
-class HttpCycle(ASGICycle):
-    def __init__(self, request: Request):
-        self.request = request
-        self.status_code = 200
-        self.headers: Iterable[Tuple[str, str]] = ()
-        self.body = b''
-
-    @property
-    def response(self) -> Response:
-        return self.body, self.status_code, self.headers
-
-    @property
-    def scope(self) -> Scope:
-        return {
-            'type': 'http',
-            'asgi': {'version': '3.0'},
-            'http_version': '1.1',
-            'method': self.request.method,
-            'scheme': self.request.scheme,
-            'path': self.request.path,
-            # 'raw_path': ...,
-            'query_string': self.request.query_string,
-            'root_path': self.request.environ.get('SCRIPT_NAME', ''),
-            'headers': tuple((k.encode(), v.encode()) for k, v in self.request.headers),
-            'server': (
-                self.request.environ.get('SERVER_NAME'),
-                self.request.environ.get('SERVER_PORT'),
-            ),
-            'client': self.request.remote_addr,
-        }
-
-    async def receive(self) -> Message:
-        return {
-            'type': 'http.request',
-            'body': self.request.get_data(
-                cache=False, as_text=False, parse_form_data=True
-            )
-            or b'',
-            'more_body': False,
-        }
-
-    async def send(self, message: Message) -> None:
-        if message['type'] == 'http.response.start':
-            self.status_code = message['status']
-            self.headers = tuple(
-                (key.decode(), value.decode()) for (key, value) in message['headers']
-            )
-        elif message['type'] == 'http.response.body':
-            self.body = message['body']
-        return None
+class Service(str, Enum):
+    google_cloud_functions = 'Google Cloud Functions'
+    aws_lambda = 'AWS Lambda'
 
 
 class Agraffe:
-    def __init__(self, app: ASGIApp):
+    _HttpCycle: Type[ASGICycle]
+
+    def __init__(self, app: ASGIApp, service: Union[str, Service]):
+        if service == Service.google_cloud_functions:
+            from .services import google_cloud_functions
+
+            self._HttpCycle = google_cloud_functions.HttpCycle
+        elif service == Service.aws_lambda:
+            from .services import aws_lambda
+
+            self._HttpCycle = aws_lambda.HttpCycle
+        else:
+            service = ', '.join(map(lambda x: x.value, Service))
+            raise ValueError(f'Please set service either {service}.')
+
         self.app = app
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    def __call__(self, request: Request) -> Response:
-        cycle = HttpCycle(request)
+    def __call__(self, request: Any) -> Response:
+        cycle = self._HttpCycle(request)
         cycle(app=self.app)
         return cycle.response
 
     @classmethod
-    def entry_point(cls, app: ASGIApp) -> Callable[[Request], Response]:
-        def _entry_point(request: Request) -> Response:
-            return cls(app)(request=request)
+    def entry_point(
+        cls, app: ASGIApp, service: Union[str, Service]
+    ) -> Callable[..., Any]:
+        if service == Service.google_cloud_functions:
 
-        return _entry_point
+            def _entry_point4gcf(request: Any) -> Response:
+                return cls(app, service)(request=request)
+
+            return _entry_point4gcf
+
+        elif service == Service.aws_lambda:
+
+            def _entry_point4aws_lambda(event: Any, context: Any) -> Any:
+                body, status_code, headers = cls(app, service)(
+                    request={'event': event, 'context': context}
+                )
+                return {
+                    'statusCode': status_code,
+                    'headers': dict(headers),
+                    'body': body,
+                    'isBase64Encoded': True,
+                }
+
+            return _entry_point4aws_lambda
+        else:
+            service = ', '.join(map(lambda x: x.value, Service))
+            raise ValueError(f'Please set service either {service}.')

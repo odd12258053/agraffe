@@ -1,0 +1,13 @@
+region: us-east-1
+
+function_name: example
+handler: main.entry_point
+description: API example
+runtime: python3.7
+timeout: 15
+memory_size: 256
+environment_variables:
+    AgraffeService: AWS Lambda
+
+build:
+  source_directories: lib

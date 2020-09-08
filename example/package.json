@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "description": "",
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "sls deploy",
+    "sls": "sls"
+  },
+  "dependencies": {
+    "serverless": "^1.80.0"
+  },
+  "devDependencies": {
+    "serverless-python-requirements": "^5.1.0"
+  }
+}
