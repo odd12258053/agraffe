@@ -1,13 +1,14 @@
 import asyncio
 from typing import Generic, Iterable, Tuple, TypeVar
 
-from agraffe.types import ASGIApp, Message, Response, Scope
+from agraffe.types import ASGIApp, Message, Scope
 
-T = TypeVar('T')
+Req = TypeVar('Req')
+Res = TypeVar('Res')
 
 
-class HttpCycleBase(Generic[T]):
-    def __init__(self, request: T):
+class HttpCycleBase(Generic[Req, Res]):
+    def __init__(self, request: Req):
         self.request = request
         self.status_code = 200
         self.headers: Iterable[Tuple[str, str]] = ()
@@ -20,8 +21,8 @@ class HttpCycleBase(Generic[T]):
         loop.run_until_complete(task)
 
     @property
-    def response(self) -> Response:
-        return self.body, self.status_code, self.headers
+    def response(self) -> Res:
+        raise NotImplementedError
 
     async def send(self, message: Message) -> None:
         if message['type'] == 'http.response.start':

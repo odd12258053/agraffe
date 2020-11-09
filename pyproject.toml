@@ -37,3 +37,14 @@ dev = [
     "flake8 >=3.8.3, <4.0.0",
 ]
 
+[tool.isort]
+py_version = "37"
+profile = "black"
+src_paths = ["*.py", "config", "libs", "api"]
+include_trailing_comma = true
+multi_line_output = 3
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+skip-string-normalization = true

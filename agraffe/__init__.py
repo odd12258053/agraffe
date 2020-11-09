@@ -1,6 +1,6 @@
-""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """
+""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """  # noqa: E501
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 import asyncio
 from enum import Enum
@@ -15,27 +15,14 @@ class Service(str, Enum):
 
 
 class Agraffe:
-    _HttpCycle: Type[ASGICycle]
-
-    def __init__(self, app: ASGIApp, service: Union[str, Service]):
-        if service == Service.google_cloud_functions:
-            from .services import google_cloud_functions
-
-            self._HttpCycle = google_cloud_functions.HttpCycle
-        elif service == Service.aws_lambda:
-            from .services import aws_lambda
-
-            self._HttpCycle = aws_lambda.HttpCycle
-        else:
-            service = ', '.join(map(lambda x: x.value, Service))
-            raise ValueError(f'Please set service either {service}.')
-
+    def __init__(self, app: ASGIApp, http_cycle: Type[ASGICycle]):
         self.app = app
+        self._http_cycle = http_cycle
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-    def __call__(self, request: Any) -> Response:
-        cycle = self._HttpCycle(request)
+    def __call__(self, request: Any) -> Any:
+        cycle = self._http_cycle(request)
         cycle(app=self.app)
         return cycle.response
 
@@ -44,24 +31,20 @@ class Agraffe:
         cls, app: ASGIApp, service: Union[str, Service]
     ) -> Callable[..., Any]:
         if service == Service.google_cloud_functions:
+            from .services.google_cloud_functions import HttpCycle as GCPHttpCycle
 
             def _entry_point4gcf(request: Any) -> Response:
-                return cls(app, service)(request=request)
+                return cls(app, GCPHttpCycle)(request=request)
 
             return _entry_point4gcf
 
         elif service == Service.aws_lambda:
+            from .services.aws_lambda import HttpCycle as AWSHttpCycle
 
             def _entry_point4aws_lambda(event: Any, context: Any) -> Any:
-                body, status_code, headers = cls(app, service)(
+                return cls(app, AWSHttpCycle)(
                     request={'event': event, 'context': context}
                 )
-                return {
-                    'statusCode': status_code,
-                    'headers': dict(headers),
-                    'body': body,
-                    'isBase64Encoded': True,
-                }
 
             return _entry_point4aws_lambda
         else:
