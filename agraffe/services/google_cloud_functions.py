@@ -18,7 +18,10 @@ class Request(Protocol):
         ...
 
 
-class HttpCycle(HttpCycleBase[Request]):
+Response = Tuple[bytes, int, Iterable[Tuple[str, str]]]
+
+
+class HttpCycle(HttpCycleBase[Request, Response]):
     @property
     def scope(self) -> Scope:
         return {
@@ -51,3 +54,7 @@ class HttpCycle(HttpCycleBase[Request]):
             or b'',
             'more_body': False,
         }
+
+    @property
+    def response(self) -> Response:
+        return self.body, self.status_code, self.headers

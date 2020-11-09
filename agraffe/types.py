@@ -1,4 +1,4 @@
-from typing import Any, Awaitable, Callable, Iterable, MutableMapping, Tuple
+from typing import Any, Awaitable, Callable, MutableMapping
 
 from typing_extensions import Protocol
 
@@ -6,7 +6,8 @@ Message = MutableMapping[str, Any]
 Scope = MutableMapping[str, Any]
 Receive = Callable[[], Awaitable[Message]]
 Send = Callable[[Message], Awaitable[None]]
-Response = Tuple[bytes, int, Iterable[Tuple[str, str]]]
+Request = Any
+Response = Any
 
 
 class ASGIApp(Protocol):
@@ -15,7 +16,7 @@ class ASGIApp(Protocol):
 
 
 class ASGICycle(Protocol):
-    def __init__(self, request: Any) -> None:
+    def __init__(self, request: Request) -> None:
         ...
 
     def __call__(self, app: ASGIApp) -> None:

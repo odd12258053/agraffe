@@ -1,5 +1,4 @@
 node_modules/
 agraffe/
 .serverless/
-serverless_http.yml
 package-lock.json

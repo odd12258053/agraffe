@@ -1,4 +1,4 @@
-service: agraffe-rest
+service: agraffe-http
 
 provider:
   name: aws
@@ -19,37 +19,34 @@ functions:
         - models.py
         - agraffe
     events:
-      - http:
+      - httpApi:
           path: /
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /empty
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /empty/text
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /none
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /items/{item_id}
-          method: get
-          request:
-            parameters:
-              paths:
-                item_id: true
-      - http:
+          method: GET
+      - httpApi:
           path: /items
-          method: post
-      - http:
+          method: POST
+      - httpApi:
           path: /cookies
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /text
-          method: get
-      - http:
+          method: GET
+      - httpApi:
           path: /image
-          method: get
+          method: GET
+
 
 plugins:
   - serverless-python-requirements
