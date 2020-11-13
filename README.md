@@ -1,12 +1,12 @@
 
 [![PyPI version](https://badge.fury.io/py/agraffe.svg)](https://badge.fury.io/py/agraffe)
 
-Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions).
+Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions).
 
 ## Support Services
 - [x] Google Cloud Functions
-- [x] AWS lambda (with API Gateway HTTP API or REST API)
-- [ ] Azure Functions
+- [x] AWS lambda (with API Gateway HTTP API and REST API)
+- [x] Azure Functions
 
 ## Requirements
 
@@ -41,8 +41,14 @@ def read_root():
 def read_item(item_id: int, q: Optional[str] = None):
     return {"item_id": item_id, "q": q}
 
-
 entry_point = Agraffe.entry_point(app, Service.google_cloud_functions)
+```
+```python
+# or
+from agraffe.services.google_cloud_functions import HttpCycle
+
+def entry_point(request):
+    return Agraffe(app, HttpCycle)(request=request)
 ```
 
 Deploy it
