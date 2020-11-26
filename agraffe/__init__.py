@@ -1,4 +1,4 @@
-""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """  # noqa: E501
+""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions). """  # noqa: E501
 
 __version__ = "0.4.0"
 
@@ -50,8 +50,9 @@ class Agraffe:
             return _entry_point4aws_lambda
         elif service == Service.azure_functions:
             from .services.azure_functions import HttpCycle as AzureHttpCycle
+            from .services.azure_functions import HttpRequest, HttpResponse
 
-            def _entry_point4azure_functions(req: Any) -> Any:
+            def _entry_point4azure_functions(req: HttpRequest) -> HttpResponse:
                 return cls(app, AzureHttpCycle)(request=req)
 
             return _entry_point4azure_functions
