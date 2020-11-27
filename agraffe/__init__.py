@@ -1,17 +1,18 @@
-""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions). """  # noqa: E501
+""" Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions). """  # noqa: E501
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 import asyncio
 from enum import Enum
 from typing import Any, Callable, Type, Union
 
-from .types import ASGIApp, ASGICycle, Response
+from .types import ASGIApp, ASGICycle
 
 
 class Service(str, Enum):
     google_cloud_functions = 'Google Cloud Functions'
     aws_lambda = 'AWS Lambda'
+    azure_functions = 'Azure Functions'
 
 
 class Agraffe:
@@ -33,7 +34,7 @@ class Agraffe:
         if service == Service.google_cloud_functions:
             from .services.google_cloud_functions import HttpCycle as GCPHttpCycle
 
-            def _entry_point4gcf(request: Any) -> Response:
+            def _entry_point4gcf(request: Any) -> Any:
                 return cls(app, GCPHttpCycle)(request=request)
 
             return _entry_point4gcf
@@ -47,6 +48,15 @@ class Agraffe:
                 )
 
             return _entry_point4aws_lambda
+        elif service == Service.azure_functions:
+            from .services.azure_functions import HttpCycle as AzureHttpCycle
+            from .services.azure_functions import HttpRequest, HttpResponse
+
+            def _entry_point4azure_functions(req: HttpRequest) -> HttpResponse:
+                return cls(app, AzureHttpCycle)(request=req)
+
+            return _entry_point4azure_functions
+
         else:
             service = ', '.join(map(lambda x: x.value, Service))
             raise ValueError(f'Please set service either {service}.')

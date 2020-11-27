@@ -1,0 +1,5 @@
+fastapi==0.61.2
+pydantic==1.7.2
+starlette==0.13.6
+typing-extensions==3.7.4.3
+agraffe==0.4.0

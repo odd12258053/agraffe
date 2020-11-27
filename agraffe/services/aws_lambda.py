@@ -65,7 +65,6 @@ class HttpCycle(HttpCycleBase[Request, Response]):
             'scheme': 'http',
             'path': path,
             'query_string': query_string,
-            'root_path': '',
             'headers': headers,
             'server': None,
             'client': None,
