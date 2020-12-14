@@ -1,4 +1,6 @@
 
+![icon](./doc/static/img/icon_with_text.png)
+
 [![PyPI version](https://badge.fury.io/py/agraffe.svg)](https://badge.fury.io/py/agraffe)
 
 Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions).
