@@ -1,5 +1,5 @@
 
-![icon](./static/img/icon_with_text.png)
+![icon](./doc/static/img/icon_with_text.png)
 
 [![PyPI version](https://badge.fury.io/py/agraffe.svg)](https://badge.fury.io/py/agraffe)
 
