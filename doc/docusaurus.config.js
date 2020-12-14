@@ -5,7 +5,7 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/icon.png',
   organizationName: 'odd12258053',
   projectName: 'agraffe',
   themeConfig: {
@@ -13,7 +13,7 @@ module.exports = {
       title: 'Agraffe',
       logo: {
         alt: 'Logo',
-        src: 'img/logo.svg',
+        src: 'img/icon.png',
       },
       items: [
         {
