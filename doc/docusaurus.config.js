@@ -8,6 +8,11 @@ module.exports = {
   favicon: 'img/icon.png',
   organizationName: 'odd12258053',
   projectName: 'agraffe',
+  customFields: {
+    sourceUrl: 'https://github.com/odd12258053/agraffe',
+    description:
+      'Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions).',
+  },
   themeConfig: {
     navbar: {
       title: 'Agraffe',
@@ -37,7 +42,12 @@ module.exports = {
     colorMode: {
       disableSwitch: true,
     },
-    sidebarCollapsible: false
+    sidebarCollapsible: false,
+    image: 'img/icon.png',
+    // metadatas: [
+    //   {name: 'description', content: },
+    //   {name: 'og:description', content: 'Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions).'},
+    // ]
   },
   presets: [
     [

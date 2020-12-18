@@ -1,6 +1,7 @@
 ---
 id: azure-functions
 title: Azure Functions
+description: Support to Azure Functions
 slug: /services/azure-functions
 ---
 

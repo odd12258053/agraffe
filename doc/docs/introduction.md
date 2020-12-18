@@ -1,6 +1,7 @@
 ---
 id: introduction
 title: Getting Started
+description: Introduction to Agraffe
 slug: /
 ---
 

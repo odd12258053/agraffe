@@ -10,7 +10,7 @@ export default function MainPage(): JSX.Element {
   const context = useDocusaurusContext()
   const {siteConfig = {}} = context
   return (
-    <Layout title='' description='Description will go into a meta tag in <head />'>
+    <Layout title='' description={siteConfig.customFields.description}>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
         <div className='container'>
           <h1 className='hero__title'>{siteConfig.title}</h1>
@@ -37,7 +37,7 @@ export default function MainPage(): JSX.Element {
                 const imageUrl = 'img/undraw_relaunch_day_902d.svg'
                 const description = (
                   <>
-                    Agraffe was designed to be easily use and to forget on a serverless
+                    Agraffe was designed to use quickly and to forget on a serverless
                     service.
                   </>
                 )
@@ -58,8 +58,20 @@ export default function MainPage(): JSX.Element {
               {(() => {
                 const title = 'Focus on What Matters'
                 const imageUrl = 'img/undraw_code_thinking_1jeh.svg'
-                const description = <>Agraffe let you focus on your API with ASGI.</>
-
+                const description = (
+                  <>
+                    Agraffe lets you focus on your API with ASGI. And Agraffe is
+                    friendly to{' '}
+                    <a
+                      href='https://fastapi.tiangolo.com'
+                      target='_blank'
+                      rel='noopener'
+                    >
+                      FastAPI
+                    </a>
+                    , which is fast to code and ready for production.
+                  </>
+                )
                 const img = useBaseUrl(imageUrl)
                 return (
                   <div className={clsx('col col--4', styles.feature)}>
