@@ -1,5 +1,5 @@
 
-![icon](./doc/static/img/icon_with_text.png)
+![icon](./resources/icon.png)
 
 [![PyPI version](https://badge.fury.io/py/agraffe.svg)](https://badge.fury.io/py/agraffe)
 
@@ -12,7 +12,7 @@ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Clou
 
 ## Requirements
 
-Python 3.7+
+Python 3.7, 3.8, 3.9
 
 ## Installation
 ```sh
