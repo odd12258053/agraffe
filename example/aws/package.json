@@ -4,10 +4,11 @@
   "version": "0.1.0",
   "scripts": {
     "deploy": "sls deploy",
+    "remove": "sls remove",
     "sls": "sls"
   },
   "dependencies": {
-    "serverless": "^1.80.0"
+    "serverless": "^2.57.0"
   },
   "devDependencies": {
     "serverless-python-requirements": "^5.1.0"
