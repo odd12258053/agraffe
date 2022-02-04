@@ -1,6 +1,6 @@
 """ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions). """  # noqa: E501
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 import asyncio
 from enum import Enum

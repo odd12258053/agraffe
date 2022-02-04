@@ -49,7 +49,7 @@ class HttpCycle(HttpCycleBase[Request, Response]):
         return {
             'type': 'http.request',
             'body': self.request.get_data(
-                cache=False, as_text=False, parse_form_data=True
+                cache=False, as_text=False, parse_form_data=False
             )
             or b'',
             'more_body': False,

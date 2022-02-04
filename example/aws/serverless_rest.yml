@@ -50,6 +50,18 @@ functions:
       - http:
           path: /image
           method: get
+      - http:
+          path: /form
+          method: post
+      - http:
+          path: /file
+          method: post
+      - http:
+          path: /uploadfile
+          method: post
+      - http:
+          path: /file_and_form
+          method: post
 
 plugins:
   - serverless-python-requirements

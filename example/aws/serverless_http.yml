@@ -46,6 +46,18 @@ functions:
       - httpApi:
           path: /image
           method: GET
+      - httpApi:
+          path: /form
+          method: POST
+      - httpApi:
+          path: /file
+          method: POST
+      - httpApi:
+          path: /uploadfile
+          method: POST
+      - httpApi:
+          path: /file_and_form
+          method: POST
 
 
 plugins:
