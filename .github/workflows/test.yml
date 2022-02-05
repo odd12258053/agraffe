@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }
+          python-version: ${{ matrix.python-version }}
       - name: Install Flit
         run: pip install flit
       - name: Install Dependencies
