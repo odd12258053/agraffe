@@ -67,3 +67,23 @@ jobs:
       - name: Test
         run: pytest -v test.py
         working-directory: tests/azure
+
+  test-aws-lambda:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9"]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Flit
+        run: pip install flit
+      - name: Install Dependencies
+        run: flit install --symlink --deps develop
+      - name: Test
+        run: pytest -v
+        working-directory: tests/aws
