@@ -1,12 +1,12 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[tool.flit.metadata]
-module = "agraffe"
-author = "odd"
-author-email = "odd12258053@gmail.com"
-home-page = "https://github.com/odd12258053/agraffe"
+[project]
+name = "agraffe"
+authors = [
+    {name = "odd", email = "odd12258053@gmail.com"},
+]
 classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: System Administrators",
@@ -23,20 +23,39 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "License :: OSI Approved :: MIT License"
 ]
-requires = [
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+dependencies = [
     "typing-extensions >=3.7.4, <4.0.0"
 ]
-description-file = "README.md"
-requires-python = ">=3.7"
+dynamic = ["version", "description"]
 
-[tool.flit.metadata.requires-extra]
+[project.urls]
+Home = "https://github.com/odd12258053/agraffe"
+#Source = "https://github.com/odd12258053/agraffe"
+#Documentation = "https://github.com/odd12258053/agraffe/blob/master/README.md"
+
+[project.optional-dependencies]
+test = [
+    "pytest >=6.2.5, <7.0.0",
+    "mypy ==0.931",
+    "flake8 >=4.0.1, <5.0.0",
+    "black ==22.1.0",
+    "isort >=5.10.1, <6.0.0",
+    "azure-functions >=1.5.0, <2.0",
+    "functions-framework ==3.0.0",
+    "fastapi ==0.73.0",
+    "python-multipart ==0.0.5"
+]
 dev = [
-    "mypy >=0.782, <1.0",
-    "black >=20.8b1",
-    "isort >=5.5.0, <6.0.0",
-    "flake8 >=3.8.3, <4.0.0",
+    "mypy ==0.931",
+    "flake8 >=4.0.1, <5.0.0",
+    "black ==22.1.0",
+    "isort >=5.10.1, <6.0.0",
     "azure-functions >=1.5.0, <2.0",
 ]
+doc = []
 
 [tool.isort]
 py_version = "37"
