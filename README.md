@@ -8,7 +8,7 @@ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Clou
 
 ## Support Services
 - [x] Google Cloud Functions
-- [x] AWS lambda (with API Gateway HTTP API and REST API)
+- [x] AWS lambda (with API Gateway HTTP API or REST API, or with Function URL)
 - [x] Azure Functions
 
 ## Requirements

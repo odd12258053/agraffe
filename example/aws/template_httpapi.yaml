@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  ExHttpAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.9
+      CodeUri: src/
+      Handler: main.entry_point
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          AgraffeService: AWS Lambda
+      Events:
+        Index:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: get
+        Empty:
+          Type: HttpApi
+          Properties:
+            Path: /empty
+            Method: get
+        EmptyText:
+          Type: HttpApi
+          Properties:
+            Path: /empty/text
+            Method: get
+        None:
+          Type: HttpApi
+          Properties:
+            Path: /none
+            Method: get
+        ItemsGet:
+          Type: HttpApi
+          Properties:
+            Path: /items/{item_id}
+            Method: get
+        ItemsPost:
+          Type: HttpApi
+          Properties:
+            Path: /items
+            Method: post
+        Cookies:
+          Type: HttpApi
+          Properties:
+            Path: /cookies
+            Method: get
+        Text:
+          Type: HttpApi
+          Properties:
+            Path: /text
+            Method: get
+        Image:
+          Type: HttpApi
+          Properties:
+            Path: /image
+            Method: get
+        Form:
+          Type: HttpApi
+          Properties:
+            Path: /form
+            Method: post
+        File:
+          Type: HttpApi
+          Properties:
+            Path: /file
+            Method: post
+        Uploadfile:
+          Type: HttpApi
+          Properties:
+            Path: /uploadfile
+            Method: post
+        FileAndForm:
+          Type: HttpApi
+          Properties:
+            Path: /file_and_form
+            Method: post
