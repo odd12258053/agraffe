@@ -45,7 +45,7 @@ test = [
     "isort >=5.10.1, <6.0.0",
     "azure-functions >=1.5.0, <2.0",
     "functions-framework ==3.0.0",
-    "fastapi ==0.73.0",
+    "fastapi ==0.85.1",
     "python-multipart ==0.0.5"
 ]
 dev = [
