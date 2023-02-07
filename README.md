@@ -8,12 +8,15 @@ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Clou
 
 ## Support Services
 - [x] Google Cloud Functions
+  - Python 3.7, 3.8, 3.9, 3.10, 3.11(preview)
 - [x] AWS lambda (with API Gateway HTTP API or REST API, or with Function URL)
+  - Python 3.7, 3.8, 3.9
 - [x] Azure Functions
+  - Python 3.7, 3.8, 3.9, 3.10(preview)
 
 ## Requirements
 
-Python 3.7, 3.8, 3.9
+Python 3.7+
 
 ## Installation
 ```sh
@@ -26,9 +29,7 @@ Create it
 - Create a file `main.py` with:
 
 ```python
-from agraffe import Agraffe, Service
-
-from typing import Optional
+from agraffe import Agraffe
 
 from fastapi import FastAPI
 
@@ -41,13 +42,13 @@ def read_root():
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
+def read_item(item_id: int, q: str | None = None):
     return {"item_id": item_id, "q": q}
 
-entry_point = Agraffe.entry_point(app, Service.google_cloud_functions)
+entry_point = Agraffe.entry_point(app)
 ```
 ```python
-# or
+# or, for on GCP
 from agraffe.services.google_cloud_functions import HttpCycle
 
 def entry_point(request):
@@ -59,8 +60,10 @@ Deploy it
 - Deploy the api with:
 
 ```sh
-$ gcloud functions deploy {FUNCTION NAME} --entry-point entry_point --runtime python37 --trigger-http --allow-unauthenticated
+$ gcloud functions deploy {FUNCTION NAME} --entry-point entry_point --runtime python310 --trigger-http --allow-unauthenticated
 ```
+
+See `/example` for other services.
 
 ## License
 This project is licensed under the terms of the MIT license.

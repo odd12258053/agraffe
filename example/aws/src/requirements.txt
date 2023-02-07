@@ -1,6 +1,5 @@
-fastapi==0.68.1
-pydantic==1.8.2
-starlette==0.14.2
-typing-extensions==3.7.4.3
-python-multipart==0.0.5
-agraffe==0.5.0
+fastapi
+pydantic
+typing-extensions
+python-multipart
+agraffe>=0.6.0

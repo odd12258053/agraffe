@@ -12,6 +12,3 @@ Resources:
       Timeout: 30
       FunctionUrlConfig:
         AuthType: NONE
-      Environment:
-        Variables:
-          AgraffeService: AWS Lambda
