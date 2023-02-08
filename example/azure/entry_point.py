@@ -1,5 +1,5 @@
-from agraffe import Agraffe, Service
+from agraffe import Agraffe
 
 from app import app
 
-main = Agraffe.entry_point(app, Service.azure_functions)
+main = Agraffe.entry_point(app)

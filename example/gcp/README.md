@@ -4,10 +4,9 @@
 ```sh
 $ gcloud functions deploy example \
     --entry-point entry_point \
-    --runtime python37 \
+    --runtime python310 \
     --trigger-http \
-    --allow-unauthenticated \
-    --set-env-vars AgraffeService="Google Cloud Functions"
+    --allow-unauthenticated
 ```
 
 > Prerequisites  

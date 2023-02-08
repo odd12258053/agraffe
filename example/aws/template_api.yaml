@@ -10,9 +10,6 @@ Resources:
       Handler: main.entry_point
       MemorySize: 256
       Timeout: 30
-      Environment:
-        Variables:
-          AgraffeService: AWS Lambda
       Events:
         Index:
           Type: Api

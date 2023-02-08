@@ -1,22 +1,17 @@
 """ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions). """  # noqa: E501
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 import asyncio
-from enum import Enum
 from typing import Any, Callable, Type, Union
 
+from .services import Service
 from .types import ASGIApp, ASGICycle
-
-
-class Service(str, Enum):
-    google_cloud_functions = 'Google Cloud Functions'
-    aws_lambda = 'AWS Lambda'
-    azure_functions = 'Azure Functions'
+from .utils import find_service
 
 
 class Agraffe:
-    def __init__(self, app: ASGIApp, http_cycle: Type[ASGICycle]):
+    def __init__(self, app: ASGIApp, http_cycle: Type[ASGICycle]) -> None:
         self.app = app
         self._http_cycle = http_cycle
         loop = asyncio.new_event_loop()
@@ -29,8 +24,11 @@ class Agraffe:
 
     @classmethod
     def entry_point(
-        cls, app: ASGIApp, service: Union[str, Service]
+        cls, app: ASGIApp, service: Union[str, Service, None] = None
     ) -> Callable[..., Any]:
+        if service is None:
+            service = find_service()
+
         if service == Service.google_cloud_functions:
             from .services.google_cloud_functions import HttpCycle as GCPHttpCycle
 
