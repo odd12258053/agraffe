@@ -1163,3 +1163,69 @@ def test_file_and_form(app):
         b'"filename":"test.fileb"'
         b'}'
     ), body
+
+
+def test_lifespan(app):
+    event = {
+        'body': None,
+        'headers': {
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Host': '127.0.0.1:3000',
+            'User-Agent': 'python-requests/2.27.0',
+            'X-Forwarded-Port': '3000',
+            'X-Forwarded-Proto': 'http',
+        },
+        'httpMethod': 'GET',
+        'isBase64Encoded': False,
+        'multiValueHeaders': {
+            'Accept': ['*/*'],
+            'Accept-Encoding': ['gzip, deflate, br'],
+            'Connection': ['keep-alive'],
+            'Host': ['127.0.0.1:3000'],
+            'User-Agent': ['python-requests/2.27.0'],
+            'X-Forwarded-Port': ['3000'],
+            'X-Forwarded-Proto': ['http'],
+        },
+        'multiValueQueryStringParameters': None,
+        'path': '/lifespan',
+        'pathParameters': None,
+        'queryStringParameters': None,
+        'requestContext': {
+            'accountId': '123456789012',
+            'apiId': '1234567890',
+            'domainName': '127.0.0.1:3000',
+            'extendedRequestId': None,
+            'httpMethod': 'GET',
+            'identity': {
+                'accountId': None,
+                'apiKey': None,
+                'caller': None,
+                'cognitoAuthenticationProvider': None,
+                'cognitoAuthenticationType': None,
+                'cognitoIdentityPoolId': None,
+                'sourceIp': '127.0.0.1',
+                'user': None,
+                'userAgent': 'Custom User Agent String',
+                'userArn': None,
+            },
+            'path': '/lifespan',
+            'protocol': 'HTTP/1.1',
+            'requestId': '884737a5-13cc-4308-b61c-54e068c8649b',
+            'requestTime': '19/Feb/2022:07:07:23 +0000',
+            'requestTimeEpoch': 1645254443,
+            'resourceId': '123456',
+            'resourcePath': '/lifespan',
+            'stage': 'Prod',
+        },
+        'resource': '/',
+        'stageVariables': None,
+        'version': '1.0',
+    }
+    res = app(event, {})
+    assert res['statusCode'] == 200, res['statusCode']
+    assert res['headers']['content-type'] == 'application/json', res['headers']
+    assert res['isBase64Encoded']
+    body = base64.b64decode(res['body'])
+    assert body == b'{"message":"hello"}', body

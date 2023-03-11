@@ -68,6 +68,7 @@ class HttpCycle(HttpCycleBase[Request, Response]):
             'headers': headers,
             'server': None,
             'client': None,
+            'state': self.state,
         }
 
     async def receive(self) -> Message:

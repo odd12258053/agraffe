@@ -43,6 +43,7 @@ class HttpCycle(HttpCycleBase[Request, Response]):
                 self.request.environ.get('SERVER_PORT'),
             ),
             'client': self.request.remote_addr,
+            'state': self.state,
         }
 
     async def receive(self) -> Message:

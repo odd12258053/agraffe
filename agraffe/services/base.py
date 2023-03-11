@@ -1,5 +1,5 @@
 import asyncio
-from typing import Generic, Iterable, Tuple, TypeVar
+from typing import Any, Generic, Iterable, MutableMapping, Tuple, TypeVar
 
 from agraffe.types import ASGIApp, Message, Scope
 
@@ -13,9 +13,13 @@ class HttpCycleBase(Generic[Req, Res]):
         self.status_code = 200
         self.headers: Iterable[Tuple[str, str]] = ()
         self.body = b''
+        self.state: MutableMapping[str, Any] = {}
+        self.event = asyncio.Event()
+        self.started = False
 
     def __call__(self, app: ASGIApp) -> None:
         loop = asyncio.get_event_loop()
+        loop.create_task(self.run_for_lifespan(app))
         instance = self.run(app)
         task = loop.create_task(instance)
         loop.run_until_complete(task)
@@ -35,8 +39,28 @@ class HttpCycleBase(Generic[Req, Res]):
             self.body = message['body']
         return None
 
+    async def receive_for_lifespan(self) -> Message:
+        if self.started:
+            await self.event.wait()
+        else:
+            self.started = True
+        return {}
+
+    async def send_for_lifespan(self, message: Message) -> None:
+        return None
+
+    async def run_for_lifespan(self, app: ASGIApp) -> None:
+        await app(
+            {'type': 'lifespan', 'asgi': {'version': '3.0'}, 'state': self.state},
+            self.receive_for_lifespan,
+            self.send_for_lifespan,
+        )
+
     async def run(self, app: ASGIApp) -> None:
-        await app(self.scope, self.receive, self.send)
+        try:
+            await app(self.scope, self.receive, self.send)
+        finally:
+            self.event.set()
 
     async def receive(self) -> Message:
         raise NotImplementedError

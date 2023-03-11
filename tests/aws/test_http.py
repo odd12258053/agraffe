@@ -820,3 +820,50 @@ def test_file_and_form(app):
         b'"filename":"test.fileb"'
         b'}'
     ), body
+
+
+def test_lifespan(app):
+    event = {
+        'version': '2.0',
+        'routeKey': 'GET /lifespan',
+        'rawPath': '/lifespan',
+        'rawQueryString': '',
+        'cookies': [],
+        'headers': {
+            'Host': '127.0.0.1:3000',
+            'User-Agent': 'python-requests/2.27.0',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+            'X-Forwarded-Proto': 'http',
+            'X-Forwarded-Port': '3000',
+        },
+        'queryStringParameters': {},
+        'requestContext': {
+            'accountId': '123456789012',
+            'apiId': '1234567890',
+            'http': {
+                'method': 'GET',
+                'path': '/lifespan',
+                'protocol': 'HTTP/1.1',
+                'sourceIp': '127.0.0.1',
+                'userAgent': 'Custom User Agent String',
+            },
+            'requestId': '3f0b3323-c570-4ede-9044-fd0bf3128ba8',
+            'routeKey': 'GET /lifespan',
+            'stage': '$default',
+            'time': '19/Feb/2022:06:55:52 +0000',
+            'timeEpoch': 1645253752,
+            'domainName': 'localhost',
+            'domainPrefix': 'localhost',
+        },
+        'body': '',
+        'pathParameters': {},
+        'stageVariables': None,
+        'isBase64Encoded': False,
+    }
+    res = app(event, {})
+    assert res['statusCode'] == 200, res['statusCode']
+    assert res['headers']['content-type'] == 'application/json', res['headers']
+    body = base64.b64decode(res['body'])
+    assert body == b'{"message":"hello"}', body

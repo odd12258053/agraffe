@@ -162,3 +162,10 @@ def test_file_and_form(client):
         'fileb_content_type': 'text/csv',
         'filename': 'test.fileb',
     }, res.json
+
+
+def test_lifespan(client):
+    res = client.get('/lifespan')
+    assert res.status_code == 200, res.status_code
+    assert res.headers['Content-Type'] == 'application/json', res.headers
+    assert res.json == {'message': 'hello'}, res.json

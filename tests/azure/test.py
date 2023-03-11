@@ -320,3 +320,19 @@ def test_file_and_form():
         b'"filename":"test.fileb"'
         b'}'
     ), res.get_body()
+
+
+def test_lifespan():
+    import azure.functions as func
+    from entry_point import main
+
+    req = func.HttpRequest(
+        method='GET',
+        url='/lifespan',
+        body=b''
+    )
+
+    res: func.HttpResponse = main(req)
+    assert res.status_code == 200, res.status_code
+    assert res.headers['Content-Type'] == 'application/json', res.headers
+    assert res.get_body() == b'{"message":"hello"}', res.get_body()
