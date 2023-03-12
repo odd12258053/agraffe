@@ -103,3 +103,12 @@ async def file_and_form(
 @app.get('/lifespan')
 async def lifespan_(request: Request):
     return {'message': request.state.message}
+
+
+
+@contextlib.asynccontextmanager
+async def fail_lifespan(app):
+    raise Exception('Expected failed')
+    yield
+
+failed_app = FastAPI(lifespan=fail_lifespan)

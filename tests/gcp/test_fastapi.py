@@ -1,11 +1,21 @@
 import io
+
 import pytest
 
 
 @pytest.fixture
 def client():
     from functions_framework import create_app
-    app = create_app('entry_point')
+    app = create_app('entry_point', './fastapi_main.py')
+    app.debug = True
+    with app.test_client() as client:
+        yield client
+
+
+@pytest.fixture
+def failed_client():
+    from functions_framework import create_app
+    app = create_app('failed_entry_point', './fastapi_main.py')
     app.debug = True
     with app.test_client() as client:
         yield client
@@ -169,3 +179,8 @@ def test_lifespan(client):
     assert res.status_code == 200, res.status_code
     assert res.headers['Content-Type'] == 'application/json', res.headers
     assert res.json == {'message': 'hello'}, res.json
+
+
+def test_failed_lifespan(failed_client):
+    with pytest.raises(Exception):
+        failed_client.get('/lifespan')

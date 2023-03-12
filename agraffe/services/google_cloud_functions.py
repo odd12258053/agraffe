@@ -26,7 +26,7 @@ class HttpCycle(HttpCycleBase[Request, Response]):
     def scope(self) -> Scope:
         return {
             'type': 'http',
-            'asgi': {'version': '3.0'},
+            'asgi': {'version': '3.0', 'spec_version': '2.2'},
             'http_version': '1.1',
             'method': self.request.method,
             'scheme': self.request.scheme,

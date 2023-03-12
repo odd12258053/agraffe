@@ -7,22 +7,72 @@ Req = TypeVar('Req')
 Res = TypeVar('Res')
 
 
+class Lifespan:
+    def __init__(self, startup_event: asyncio.Event, shutdown_event: asyncio.Event):
+        self.state: MutableMapping[str, Any] = {}
+        self.should_exit = False
+        self.started = False
+        self.startup_event = startup_event
+        self.shutdown_event = shutdown_event
+
+    async def receive(self) -> Message:
+        if self.started:
+            await self.shutdown_event.wait()
+            return {'type': 'lifespan.shutdown'}
+        else:
+            self.started = True
+            return {'type': 'lifespan.startup'}
+
+    async def send(self, message: Message) -> None:
+        if message['type'] == 'lifespan.startup.complete':
+            self.startup_event.set()
+        elif message['type'] == 'lifespan.shutdown.complete':
+            pass
+        elif message['type'] == 'lifespan.startup.failed':
+            self.shutdown_event.set()
+            self.should_exit = True
+        elif message['type'] == 'lifespan.shutdown.failed':
+            self.shutdown_event.set()
+            self.should_exit = True
+        return None
+
+    async def run(self, app: ASGIApp) -> None:
+        try:
+            await app(
+                {'type': 'lifespan', 'asgi': {'version': '3.0'}, 'state': self.state},
+                self.receive,
+                self.send,
+            )
+        except BaseException as e:
+            self.should_exit = True
+            self.startup_event.set()
+            raise e
+
+
 class HttpCycleBase(Generic[Req, Res]):
     def __init__(self, request: Req):
         self.request = request
         self.status_code = 200
         self.headers: Iterable[Tuple[str, str]] = ()
         self.body = b''
-        self.state: MutableMapping[str, Any] = {}
-        self.event = asyncio.Event()
-        self.started = False
+        self.startup_event = asyncio.Event()
+        self.shutdown_event = asyncio.Event()
+        self.lifespan = Lifespan(self.startup_event, self.shutdown_event)
+
+    @property
+    def state(self) -> MutableMapping[str, Any]:
+        return self.lifespan.state
 
     def __call__(self, app: ASGIApp) -> None:
         loop = asyncio.get_event_loop()
-        loop.create_task(self.run_for_lifespan(app))
-        instance = self.run(app)
-        task = loop.create_task(instance)
-        loop.run_until_complete(task)
+        lifespan_task = loop.create_task(self.lifespan.run(app))
+        main_task = loop.create_task(self.run(app))
+        loop.run_until_complete(main_task)
+        loop.run_until_complete(lifespan_task)
+        if self.lifespan.should_exit:
+            err = lifespan_task.exception()
+            if err:
+                raise err
 
     @property
     def response(self) -> Res:
@@ -37,30 +87,16 @@ class HttpCycleBase(Generic[Req, Res]):
             )
         elif message['type'] == 'http.response.body':
             self.body = message['body']
-        return None
-
-    async def receive_for_lifespan(self) -> Message:
-        if self.started:
-            await self.event.wait()
-        else:
-            self.started = True
-        return {}
-
-    async def send_for_lifespan(self, message: Message) -> None:
-        return None
-
-    async def run_for_lifespan(self, app: ASGIApp) -> None:
-        await app(
-            {'type': 'lifespan', 'asgi': {'version': '3.0'}, 'state': self.state},
-            self.receive_for_lifespan,
-            self.send_for_lifespan,
-        )
+        return
 
     async def run(self, app: ASGIApp) -> None:
         try:
+            await self.startup_event.wait()
+            if self.lifespan.should_exit:
+                return
             await app(self.scope, self.receive, self.send)
         finally:
-            self.event.set()
+            self.shutdown_event.set()
 
     async def receive(self) -> Message:
         raise NotImplementedError
