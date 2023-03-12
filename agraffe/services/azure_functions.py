@@ -12,7 +12,7 @@ class HttpCycle(HttpCycleBase[HttpRequest, HttpResponse]):
         parsed = urlsplit(self.request.url)
         return {
             'type': 'http',
-            'asgi': {'version': '3.0'},
+            'asgi': {'version': '3.0', 'spec_version': '2.2'},
             'http_version': '1.1',
             'method': self.request.method,
             'scheme': 'http',
@@ -24,6 +24,7 @@ class HttpCycle(HttpCycleBase[HttpRequest, HttpResponse]):
             ),
             'server': None,
             'client': None,
+            'state': self.state,
         }
 
     async def receive(self) -> Message:

@@ -45,7 +45,7 @@ jobs:
       - name: Install Dependencies
         run: flit install --symlink --deps develop
       - name: Test
-        run: pytest -v test.py
+        run: pytest -v .
         working-directory: tests/gcp
 
   test-azure-functions:
@@ -65,7 +65,7 @@ jobs:
       - name: Install Dependencies
         run: flit install --symlink --deps develop
       - name: Test
-        run: pytest -v test.py
+        run: pytest -v .
         working-directory: tests/azure
 
   test-aws-lambda:
@@ -85,5 +85,5 @@ jobs:
       - name: Install Dependencies
         run: flit install --symlink --deps develop
       - name: Test
-        run: pytest -v
+        run: pytest -v .
         working-directory: tests/aws

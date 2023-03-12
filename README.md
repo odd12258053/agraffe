@@ -29,11 +29,17 @@ Create it
 - Create a file `main.py` with:
 
 ```python
+import contextlib
+
 from agraffe import Agraffe
+from fastapi import FastAPI, Request
 
-from fastapi import FastAPI
 
-app = FastAPI()
+@contextlib.asynccontextmanager
+async def lifespan(app):
+    yield {'message': 'hello'}
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -44,6 +50,12 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str | None = None):
     return {"item_id": item_id, "q": q}
+
+
+@app.get("/lifespan")
+def lifespan_(request: Request):
+    return {"count": request.state.message}
+
 
 entry_point = Agraffe.entry_point(app)
 ```

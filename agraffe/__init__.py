@@ -1,6 +1,6 @@
 """ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Cloud Functions and Azure Functions). """  # noqa: E501
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 import asyncio
 from typing import Any, Callable, Type, Union

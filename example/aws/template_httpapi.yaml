@@ -76,3 +76,8 @@ Resources:
           Properties:
             Path: /file_and_form
             Method: post
+        Lifespan:
+          Type: HttpApi
+          Properties:
+            Path: /lifespan
+            Method: get

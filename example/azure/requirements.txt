@@ -1,5 +1,5 @@
-fastapi
+fastapi>=0.94.0
 pydantic
 typing-extensions
 python-multipart
-agraffe>=0.6.0
+agraffe>=0.7.0
