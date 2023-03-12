@@ -8,11 +8,11 @@ Agraffe, build API with ASGI in Serverless services (e.g AWS lambda, Google Clou
 
 ## Support Services
 - [x] Google Cloud Functions
-  - Python 3.7, 3.8, 3.9, 3.10, 3.11(preview)
+  - Python 3.7, 3.8, 3.9, 3.10, 3.11
 - [x] AWS lambda (with API Gateway HTTP API or REST API, or with Function URL)
   - Python 3.7, 3.8, 3.9
 - [x] Azure Functions
-  - Python 3.7, 3.8, 3.9, 3.10(preview)
+  - Python 3.7, 3.8, 3.9, 3.10
 
 ## Requirements
 
